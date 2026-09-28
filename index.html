@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Révision - TECH Université</title>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --primary-hover: #004085;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #333333;
+            --correct: #28a745;
+            --incorrect: #dc3545;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            background-color: #e9ecef;
+            padding: 10px 15px;
+            border-left: 5px solid var(--primary);
+            margin: 30px 0 20px 0;
+            border-radius: 0 6px 6px 0;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .question-card {
+            background: #fafafa;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .option-label:hover {
+            background: #f0f4f8;
+            border-color: #b3d7ff;
+        }
+
+        .option-label input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.1);
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        #result-box {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 8px;
+            background-color: #e2e3e5;
+            border: 1px solid #d6d8db;
+        }
+
+        #result-box.active {
+            display: block;
+        }
+
+        .score-display {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Classes de correction dynamique */
+        .question-card.correct-card {
+            border-color: var(--correct);
+            background-color: #f8fff9;
+        }
+
+        .question-card.incorrect-card {
+            border-color: var(--incorrect);
+            background-color: #fff8f8;
+        }
+
+        .correct-answer-text {
+            color: var(--correct);
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-top: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Quiz de Révision TECH</h1>
+    <p class="subtitle">Évaluation globale des connaissances (Modules 1 & 2)</p>
+
+    <form id="quizForm">
+
+        <!-- SECTION 1 -->
+        <div class="section-title">Section 1 : À propos de TECH & Bourses FUNDEUM</div>
+
+        <div class="question-card" id="q1-card">
+            <div class="question-text">1. Quelle distinction majeure la revue Forbes a-t-elle attribuée à TECH ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q1" value="A"> A) La plus ancienne université d'Europe</label>
+                <label class="option-label"><input type="radio" name="q1" value="B"> B) La meilleure université numérique du monde</label>
+                <label class="option-label"><input type="radio" name="q1" value="C"> C) La plus grande école de commerce d'Amérique Latine</label>
+                <label class="option-label"><input type="radio" name="q1" value="D"> D) Le premier centre de recherche en IA</label>
+            </div>
+            <div class="correct-answer-text" id="q1-feedback">Réponse correcte : B</div>
+        </div>
+
+        <div class="question-card" id="q2-card">
+            <div class="question-text">2. Quel est le taux de placement / d'employabilité affiché par TECH pour ses diplômés ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q2" value="A"> A) 85 %</label>
+                <label class="option-label"><input type="radio" name="q2" value="B"> B) 90 %</label>
+                <label class="option-label"><input type="radio" name="q2" value="C"> C) 95 %</label>
+                <label class="option-label"><input type="radio" name="q2" value="D"> D) 99 %</label>
+            </div>
+            <div class="correct-answer-text" id="q2-feedback">Réponse correcte : D</div>
+        </div>
+
+        <div class="question-card" id="q3-card">
+            <div class="question-text">3. Où sont situées les trois « Universités Propres » du groupe TECH ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q3" value="A"> A) Espagne, Mexique et Andorre</label>
+                <label class="option-label"><input type="radio" name="q3" value="B"> B) Espagne, France et États-Unis</label>
+                <label class="option-label"><input type="radio" name="q3" value="C"> C) Mexique, Colombie et Argentine</label>
+                <label class="option-label"><input type="radio" name="q3" value="D"> D) Espagne, Brésil et Andorre</label>
+            </div>
+            <div class="correct-answer-text" id="q3-feedback">Réponse correcte : A</div>
+        </div>
+
+        <div class="question-card" id="q4-card">
+            <div class="question-text">4. Quelle est la fonction principale de l'organisme FUNDEUM au sein de la politique de TECH ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q4" value="A"> A) Héberger les serveurs informatiques de l'université</label>
+                <label class="option-label"><input type="radio" name="q4" value="B"> B) Recruter les enseignants internationaux</label>
+                <label class="option-label"><input type="radio" name="q4" value="C"> C) Gérer l'octroi des bourses d'études et promouvoir le talent</label>
+                <label class="option-label"><input type="radio" name="q4" value="D"> D) Organiser les cérémonies de remise des diplômes</label>
+            </div>
+            <div class="correct-answer-text" id="q4-feedback">Réponse correcte : C</div>
+        </div>
+
+        <div class="question-card" id="q5-card">
+            <div class="question-text">5. Quel est le pourcentage maximum de réduction de bourse applicable sur un Mastère spécialisé ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q5" value="A"> A) 35 %</label>
+                <label class="option-label"><input type="radio" name="q5" value="B"> B) 50 %</label>
+                <label class="option-label"><input type="radio" name="q5" value="C"> C) 65 %</label>
+                <label class="option-label"><input type="radio" name="q5" value="D"> D) 80 %</label>
+            </div>
+            <div class="correct-answer-text" id="q5-feedback">Réponse correcte : C</div>
+        </div>
+
+        <div class="question-card" id="q6-card">
+            <div class="question-text">6. Quel est le pourcentage maximum de réduction de bourse applicable pour un Mastère spécialisé hybride ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q6" value="A"> A) 65 %</label>
+                <label class="option-label"><input type="radio" name="q6" value="B"> B) 35 %</label>
+                <label class="option-label"><input type="radio" name="q6" value="C"> C) 25 %</label>
+                <label class="option-label"><input type="radio" name="q6" value="D"> D) 0 %</label>
+            </div>
+            <div class="correct-answer-text" id="q6-feedback">Réponse correcte : B</div>
+        </div>
+
+        <div class="question-card" id="q7-card">
+            <div class="question-text">7. Quel taux de réduction de bourse FUNDEUM s'applique aux offres de type « Pack » ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q7" value="A"> A) 10 %</label>
+                <label class="option-label"><input type="radio" name="q7" value="B"> B) 20 %</label>
+                <label class="option-label"><input type="radio" name="q7" value="C"> C) 0 %</label>
+                <label class="option-label"><input type="radio" name="q7" value="D"> D) 15 %</label>
+            </div>
+            <div class="correct-answer-text" id="q7-feedback">Réponse correcte : C</div>
+        </div>
+
+        <!-- SECTION 2 -->
+        <div class="section-title">Section 2 : Méthodologie Pédagogique (Relearning & Composants)</div>
+
+        <div class="question-card" id="q8-card">
+            <div class="question-text">8. Sur quel principe psychologique/pédagogique repose principalement la méthodologie Relearning ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q8" value="A"> A) L'apprentissage par cœur passif</label>
+                <label class="option-label"><input type="radio" name="q8" value="B"> B) La répétition espacée pour contrer la courbe d'oubli</label>
+                <label class="option-label"><input type="radio" name="q8" value="C"> C) L'immersion linguistique totale</label>
+                <label class="option-label"><input type="radio" name="q8" value="D"> D) L'enseignement magistral traditionnel</label>
+            </div>
+            <div class="correct-answer-text" id="q8-feedback">Réponse correcte : B</div>
+        </div>
+
+        <div class="question-card" id="q9-card">
+            <div class="question-text">9. Selon la courbe de l'oubli d'Ebbinghaus, quel pourcentage d'informations est oublié après 30 jours sans révision ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q9" value="A"> A) 50 %</label>
+                <label class="option-label"><input type="radio" name="q9" value="B"> B) 70 %</label>
+                <label class="option-label"><input type="radio" name="q9" value="C"> C) 85 %</label>
+                <label class="option-label"><input type="radio" name="q9" value="D"> D) 95 %</label>
+            </div>
+            <div class="correct-answer-text" id="q9-feedback">Réponse correcte : D</div>
+        </div>
+
+        <div class="question-card" id="q10-card">
+            <div class="question-text">10. Quelle est la durée idéale d'un module de micro-apprentissage dans la méthode Relearning ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q10" value="A"> A) 2 à 5 minutes</label>
+                <label class="option-label"><input type="radio" name="q10" value="B"> B) 10 à 15 minutes</label>
+                <label class="option-label"><input type="radio" name="q10" value="C"> C) 30 à 45 minutes</label>
+                <label class="option-label"><input type="radio" name="q10" value="D"> D) 60 minutes</label>
+            </div>
+            <div class="correct-answer-text" id="q10-feedback">Réponse correcte : B</div>
+        </div>
+
+        <div class="question-card" id="q11-card">
+            <div class="question-text">11. Combien de ressources / éléments pédagogiques différents peuvent être réunis au sein d'un thème chez TECH ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q11" value="A"> A) Jusqu'à 5 éléments</label>
+                <label class="option-label"><input type="radio" name="q11" value="B"> B) Jusqu'à 10 éléments</label>
+                <label class="option-label"><input type="radio" name="q11" value="C"> C) Jusqu'à 15 éléments</label>
+                <label class="option-label"><input type="radio" name="q11" value="D"> D) Jusqu'à 20 éléments</label>
+            </div>
+            <div class="correct-answer-text" id="q11-feedback">Réponse correcte : D</div>
+        </div>
+
+        <div class="question-card" id="q12-card">
+            <div class="question-text">12. Combien de questions comporte le test d'évaluation finale situé à la fin de chaque thème ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q12" value="A"> A) 5 questions</label>
+                <label class="option-label"><input type="radio" name="q12" value="B"> B) 10 questions</label>
+                <label class="option-label"><input type="radio" name="q12" value="C"> C) 13 questions</label>
+                <label class="option-label"><input type="radio" name="q12" value="D"> D) 20 questions</label>
+            </div>
+            <div class="correct-answer-text" id="q12-feedback">Réponse correcte : C</div>
+        </div>
+
+        <div class="question-card" id="q13-card">
+            <div class="question-text">13. Combien de questions comporte le pré-test d'auto-évaluation diagnostic au début d'un thème ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q13" value="A"> A) 5 questions</label>
+                <label class="option-label"><input type="radio" name="q13" value="B"> B) 10 questions</label>
+                <label class="option-label"><input type="radio" name="q13" value="C"> C) 13 questions</label>
+                <label class="option-label"><input type="radio" name="q13" value="D"> D) 15 questions</label>
+            </div>
+            <div class="correct-answer-text" id="q13-feedback">Réponse correcte : B</div>
+        </div>
+
+        <!-- SECTION 3 -->
+        <div class="section-title">Section 3 : Typologie des Diplômes & Portfolio Educatif</div>
+
+        <div class="question-card" id="q14-card">
+            <div class="question-text">14. Quelle est la caractéristique principale d'un Diplôme Propre (Título Propio) par rapport à un Diplôme Officiel ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q14" value="A"> A) Il donne directement accès à un doctorat d'État</label>
+                <label class="option-label"><input type="radio" name="q14" value="B"> B) Il est axé sur la mise à jour des compétences professionnelles et la réactivité du marché</label>
+                <label class="option-label"><input type="radio" name="q14" value="C"> C) Il nécessite obligatoirement un stage en présentiel</label>
+                <label class="option-label"><input type="radio" name="q14" value="D"> D) Il est délivré uniquement sous forme papier sans version numérique</label>
+            </div>
+            <div class="correct-answer-text" id="q14-feedback">Réponse correcte : B</div>
+        </div>
+
+        <div class="question-card" id="q15-card">
+            <div class="question-text">15. Les diplômes officiels délivrés par TECH Université (Espagne) sont intégrés à quel espace éducatif ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q15" value="A"> A) L'Espace Européen d'Enseignement Supérieur (EEES)</label>
+                <label class="option-label"><input type="radio" name="q15" value="B"> B) Le réseau MERCOSUR</label>
+                <label class="option-label"><input type="radio" name="q15" value="C"> C) Le système d'accréditation NASDAQ</label>
+                <label class="option-label"><input type="radio" name="q15" value="D"> D) L'Espace Asiatique de Qualification</label>
+            </div>
+            <div class="correct-answer-text" id="q15-feedback">Réponse correcte : A</div>
+        </div>
+
+        <div class="question-card" id="q16-card">
+            <div class="question-text">16. Par quel ministère sont reconnus les diplômes officiels délivrés par TECH Université (Mexique) ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q16" value="A"> A) Le Ministère du Travail (STPS)</label>
+                <label class="option-label"><input type="radio" name="q16" value="B"> B) Le Ministère de l'Éducation Publique (SEP)</label>
+                <label class="option-label"><input type="radio" name="q16" value="C"> C) Le Conseil national de la Recherche (CONACYT)</label>
+                <label class="option-label"><input type="radio" name="q16" value="D"> D) L'Institut National d'Évaluation</label>
+            </div>
+            <div class="correct-answer-text" id="q16-feedback">Réponse correcte : B</div>
+        </div>
+
+        <div class="question-card" id="q17-card">
+            <div class="question-text">17. Quelle est la particularité d'un Mastère spécialisé Hybride ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q17" value="A"> A) Il combine cours du soir et cours du week-end</label>
+                <label class="option-label"><input type="radio" name="q17" value="B"> B) Il combine une phase théorique 100 % en ligne et un stage pratique en entreprise</label>
+                <label class="option-label"><input type="radio" name="q17" value="C"> C) Il est enseigné à 50 % en espagnol et 50 % en anglais</label>
+                <label class="option-label"><input type="radio" name="q17" value="D"> D) Il est réservé uniquement aux enseignants de TECH</label>
+            </div>
+            <div class="correct-answer-text" id="q17-feedback">Réponse correcte : B</div>
+        </div>
+
+        <div class="question-card" id="q18-card">
+            <div class="question-text">18. Quel taux de réduction maximal de bourse s'applique à la gamme "Formation Pratique" (Práctica Garantizada) ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q18" value="A"> A) 65 %</label>
+                <label class="option-label"><input type="radio" name="q18" value="B"> B) 35 %</label>
+                <label class="option-label"><input type="radio" name="q18" value="C"> C) 25 %</label>
+                <label class="option-label"><input type="radio" name="q18" value="D"> D) 0 %</label>
+            </div>
+            <div class="correct-answer-text" id="q18-feedback">Réponse correcte : C</div>
+        </div>
+
+        <div class="question-card" id="q19-card">
+            <div class="question-text">19. Sur quel cadre de référence international s'appuie l'École de Langues de TECH pour ses formations linguistiques ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q19" value="A"> A) TOEFL / TOEIC</label>
+                <label class="option-label"><input type="radio" name="q19" value="B"> B) CECRL (Cadre Européen Commun de Référence pour les Langues)</label>
+                <label class="option-label"><input type="radio" name="q19" value="C"> C) IELTS</label>
+                <label class="option-label"><input type="radio" name="q19" value="D"> D) DELE / FLE</label>
+            </div>
+            <div class="correct-answer-text" id="q19-feedback">Réponse correcte : B</div>
+        </div>
+
+        <div class="question-card" id="q20-card">
+            <div class="question-text">20. Combien d'enseignants et experts internationaux composent le corps professoral de TECH ?</div>
+            <div class="options">
+                <label class="option-label"><input type="radio" name="q20" value="A"> A) Plus de 1 000</label>
+                <label class="option-label"><input type="radio" name="q20" value="B"> B) Plus de 3 000</label>
+                <label class="option-label"><input type="radio" name="q20" value="C"> C) Plus de 6 000</label>
+                <label class="option-label"><input type="radio" name="q20" value="D"> D) Plus de 10 000</label>
+            </div>
+            <div class="correct-answer-text" id="q20-feedback">Réponse correcte : C</div>
+        </div>
+
+        <button type="button" class="btn-submit" onclick="submitQuiz()">Valider mes réponses</button>
+    </form>
+
+    <div id="result-box">
+        <div class="score-display" id="score-text"></div>
+        <p id="comment-text"></p>
+    </div>
+</div>
+
+<script>
+    const correctAnswers = {
+        q1: 'B', q2: 'D', q3: 'A', q4: 'C', q5: 'C',
+        q6: 'B', q7: 'C', q8: 'B', q9: 'D', q10: 'B',
+        q11: 'D', q12: 'C', q13: 'B', q14: 'B', q15: 'A',
+        q16: 'B', q17: 'B', q18: 'C', q19: 'B', q20: 'C'
+    };
+
+    function submitQuiz() {
+        let score = 0;
+        const total = Object.keys(correctAnswers).length;
+
+        for (let key in correctAnswers) {
+            const selectedOption = document.querySelector(`input[name="${key}"]:checked`);
+            const card = document.getElementById(`${key}-card`);
+            const feedback = document.getElementById(`${key}-feedback`);
+
+            // Reset visuel
+            card.classList.remove('correct-card', 'incorrect-card');
+            
+            if (selectedOption) {
+                if (selectedOption.value === correctAnswers[key]) {
+                    score++;
+                    card.classList.add('correct-card');
+                    feedback.style.display = 'none';
+                } else {
+                    card.classList.add('incorrect-card');
+                    feedback.style.display = 'block';
+                }
+            } else {
+                card.classList.add('incorrect-card');
+                feedback.style.display = 'block';
+            }
+        }
+
+        const resultBox = document.getElementById('result-box');
+        const scoreText = document.getElementById('score-text');
+        const commentText = document.getElementById('comment-text');
+
+        resultBox.classList.add('active');
+        scoreText.textContent = `Votre score : ${score} / ${total}`;
+
+        const percentage = (score / total) * 100;
+        if (percentage === 100) {
+            commentText.textContent = "Parfait ! Vous maîtrisez le sujet sur le bout des doigts.";
+        } else if (percentage >= 80) {
+            commentText.textContent = "Excellent résultat ! Quelques petits détails à revoir.";
+        } else if (percentage >= 50) {
+            commentText.textContent = "Résultat correct, mais une relecture des modules est conseillée.";
+        } else {
+            commentText.textContent = "Attention, prenez le temps de revoir les fiches de synthèse avant de retenter le test.";
+        }
+
+        // Scroll vers le résultat
+        resultBox.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+</html>
